@@ -142,6 +142,9 @@ MEDIA_URL = 'media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
 
+# To permit secure openers popups policy: 
+SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -154,6 +157,20 @@ MESSAGE_TAGS = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# CSRF_COOKIE_DOMAIN = None
+# CSRF_COOKIE_HTTPONLY =False
+# CSRF_COOKIE_NAME = 'csrftoken'
+# CSRF_COOKIE_PATH = '/'
+# CSRF_COOKIE_SAMESITE = 'Lax'
+# CSRF_COOKIE_SECURE = False
+# CSRF_USE_SESSIONS = False
+# CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
+# CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+# CSRF_TRUSTED_ORIGINS = []
+
+
+
+
 
 # Email configurations:
 
@@ -163,3 +180,6 @@ EMAIL_HOST_USER = 'mohammed1struc@gmail.com'
 EMAIL_HOST_PASSWORD = 'nptrrygkqdioxacb'
 EMAIL_USE_TLS = True
 EMAIL_PORT = '587'
+
+
+

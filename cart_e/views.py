@@ -182,7 +182,7 @@ def cart(request, total = 0 , quantity = 0 , cartItems = None):
         assembled_total = 0
         if request.user.is_authenticated:
             cartItems = CartItem.objects.filter(user = request.user , is_active = True)
-            print(request.user)
+            
         else:
             cart = Cart.objects.get(cart_id = _cart_id(request))
             cartItems = CartItem.objects.filter(cart = cart , is_active = True)

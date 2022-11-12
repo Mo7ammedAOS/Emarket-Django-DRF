@@ -3,8 +3,10 @@ from random import choices
 from secrets import choice
 from unicodedata import category
 from django.db import models
+from accounts.models import Account
 from category.models import Category
 from django.utils.text import slugify
+from django.db.models import Avg , Count
 
 # Create your models here.
 
@@ -23,8 +25,9 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete = models.CASCADE)
     created = models.DateTimeField(auto_now_add = True)
     updated = models.DateTimeField(auto_now = True)
+  
 
-
+    
 
     def save(self,*args,**kwargs):
         self.slug = slugify(self.product_name)
@@ -34,6 +37,19 @@ class Product(models.Model):
     def __str__(self):
         return self.product_name
 
+    def averageReview(self):
+        reviews = ReviewRate.objects.filter(product = self, status = True).aggregate(av = Avg('rating'))
+        avg = 0
+        if reviews['av'] is not None:
+            avg = float(reviews['av'])
+            return avg
+
+    def countRVid(self):
+        reviews = ReviewRate.objects.filter(product = self, status = True).aggregate(count=Count('id'))
+        count= None
+        if reviews['count'] is not None:
+            count = int(reviews['count'])
+            return count
 
 class VariationManger(models.Manager):
 
@@ -61,3 +77,23 @@ class Variation(models.Model):
 
     def __str__(self):
         return self.variation_value
+
+
+class ReviewRate(models.Model):
+
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=100)
+    review = models.TextField(max_length=500, blank = True)
+    rating = models.FloatField()
+    ip = models.CharField(max_length=20, blank = True)
+    status = models.BooleanField(default = True)
+    updated_at = models.DateTimeField(auto_now = True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+    def __str__(self):
+        return self.subject
+
+   

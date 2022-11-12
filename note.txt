@@ -19,3 +19,15 @@ class Cart_Item(models.Model):
 
     def __str__(self):
         return self.product.product_name
+
+
+    {% if user.is_authenticated %}
+                            {% if any_orders_there %}
+                                <input type="submit" value="Submit Review" class="btn btn-success">
+                                {% else %}
+                                <p>Buy it first dude</p>
+                                {% endif %}
+                            {% else %}
+                            <p>you should <a href="{% url 'accounts:login' %}">login</a> first</p>
+                        {% endif %}
+                        {% include 'alerts.html' %}

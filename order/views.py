@@ -66,7 +66,7 @@ def payment(request):
     mail_subject = 'Thank you for your order'
     message = render_to_string('orders/order_recieved_email.html',{
                 'user': user,
-                'order':order
+                'order':order,
             })
             # email input:
     to_email = item.user.email
@@ -146,7 +146,7 @@ def place_order(request, total = 0, quantity = 0):
             }
             return render(request,'orders/payment.html', context)
     else:
-        print('not posted')
+        # print('not posted')
         return redirect('cart:checkout')
 
     

@@ -1,14 +1,18 @@
 from sre_constants import CATEGORY
 from sre_parse import CATEGORIES
 from unicodedata import category
-from django.shortcuts import HttpResponse, render, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import  redirect, render, get_object_or_404
 from category.models import Category
 from store.models import Product
 from cart_e.models import CartItem,Cart
 from cart_e.views import _cart_id
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-
+from store.models import ReviewRate
+from store.form import ReviewForm
+from order.models import Product_order
+from django.contrib import messages
 
 
 # Create your views here.
@@ -39,13 +43,30 @@ def store(request, catg_slug = None):
 
 
 def product_detail(request, catg_slug, product_slug):
+    
     try:
         product_information = Product.objects.get(category__slug = catg_slug, slug = product_slug)
         is_it_Incart = CartItem.objects.filter(cart__cart_id = _cart_id(request), product = product_information).exists()
-    except:
-        raise HttpResponse("no such product")
-
-    context = {'product_information':product_information,'is_it_Incart':is_it_Incart}
+        
+    except Exception as e:
+        raise e
+    if request.user.is_authenticated:
+        try:
+            any_order_there = Product_order.objects.filter(user = request.user , product_id = product_information.id).exists()
+        except Product_order.DoesNotExist:
+            any_order_there = None
+    else:
+        any_order_there = None
+    
+    
+    reviews = ReviewRate.objects.filter(product_id = product_information.id , status = True)
+    
+    context = {
+        'product_information':product_information,
+        'is_it_Incart':is_it_Incart,
+        'any_orders_there':any_order_there,
+        'reviews':reviews
+        }
     return render(request,'store/product_detail.html',context)
 
 
@@ -60,3 +81,30 @@ def search(request):
         product_count = products.count()
 
     return render(request,'store/store.html',{'products':products,'product_count':product_count})
+
+
+def submited_reviews(request,prt_ID):
+    
+    if request.method == 'POST':
+        url = request.META.get('HTTP_REFERER')
+        try:
+            reviews = ReviewRate.objects.get(user__id=request.user.id, product__id= prt_ID)
+            form = ReviewForm(request.POST , instance=reviews)
+            form.save()
+            messages.success(request,'Thank you ! Your review has been updated')
+            return redirect(url)
+
+        except ReviewRate.DoesNotExist:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                info = ReviewRate()
+                info.subject = form.cleaned_data['subject']
+                info.rating = form.cleaned_data['rating']
+                info.review = form.cleaned_data['review']
+                info.ip =  request.META.get('REMOTE_ADDR')
+                info.product_id= prt_ID
+                info.user_id = request.user.id
+                info.save()
+                messages.success(request,'Thank you ! Your review has been submited')
+                return redirect(url)
+                

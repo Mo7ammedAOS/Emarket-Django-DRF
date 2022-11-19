@@ -3,7 +3,7 @@ from random import choices
 from secrets import choice
 from unicodedata import category
 from django.db import models
-from accounts.models import Account
+from accounts.models import Account, UserProfile
 from category.models import Category
 from django.utils.text import slugify
 from django.db.models import Avg , Count
@@ -12,7 +12,7 @@ from django.db.models import Avg , Count
 
 def uploaded_photos(instance , filename):
     imagename , extension = filename.split('.')
-    return 'photos/products/%s.%s'%(instance.id ,extension)
+    return 'photos/products/%s.%s'%(F'PRODUCT{instance.id}{instance.updated} ',extension)
 
 class Product(models.Model):
     product_name = models.CharField(max_length = 200, unique = True)
@@ -82,6 +82,7 @@ class Variation(models.Model):
 class ReviewRate(models.Model):
 
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, blank = True, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100)
     review = models.TextField(max_length=500, blank = True)
@@ -96,4 +97,17 @@ class ReviewRate(models.Model):
     def __str__(self):
         return self.subject
 
-   
+
+def uploaded_photos(instance , filename):
+    imagename , extension = filename.split('.')
+    return 'photos/products_gallery/%s.%s'%(f'Pdt_Gellery_{instance.product.updated}' ,extension)
+
+class Product_Gallery(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE) 
+    image = models.ImageField(blank=True, upload_to= uploaded_photos, max_length=225) 
+
+    class Meta:
+        verbose_name = "Product_Gallery"
+        verbose_name_plural = "Product Gallery"
+    def __str__(self):
+        return self.product.product_name

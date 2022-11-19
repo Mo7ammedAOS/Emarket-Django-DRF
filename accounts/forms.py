@@ -1,6 +1,6 @@
 from re import A
 from django import forms 
-from accounts.models import Account
+from accounts.models import Account, UserProfile
 
 
 class RegisterForm(forms.ModelForm):
@@ -39,5 +39,28 @@ class RegisterForm(forms.ModelForm):
                 'placeholder': f'Enter {field.capitalize()}'
                 }
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['first_name', 'last_name', 'phone_number']
 
-        
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs={
+                'class': 'form-control',
+                'placeholder': f'Enter {field.capitalize()}'
+                }
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['address_line1', 'address_line2', 'city', 'state', 'country', 'profile_image']
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs={
+                'class': 'form-control',
+                'placeholder': f'Enter {field.capitalize()}'
+                }

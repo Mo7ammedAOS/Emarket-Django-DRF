@@ -7,7 +7,7 @@
 <div class="container">
 
 <div class="intro-banner-wrap">
-	<img src="{% static 'images/banners/1.png' %}" class="img-fluid rounded">
+	<img src="{% static 'images/banners/BANNER.png' %}" class="img-fluid rounded">
 </div>
 
 </div> <!-- container //  -->
@@ -35,6 +35,27 @@
 			<figcaption class="info-wrap">
 				<a href="{% url 'store:product_detail' product.category.slug product.slug %}" class="title">{{product.product_name}}</a>
 				<div class="price mt-1">{{product.price}}</div> <!-- price-wrap.// -->
+			
+                <div class="rate">
+                    <span>
+						<span>
+							{% if product.averageReview %}
+                            <li class=" fa fa-star{% if product.averageReview >= 0.5 and product.averageReview < 1 %}-half-o{% elif product.averageReview < 0.5 %}-o{% else %}{% endif %}" aria-hidden ="true"></li>
+                            <li class=" fa fa-star{% if product.averageReview >= 1.5 and product.averageReview < 2 %}-half-o{% elif product.averageReview < 1.5 %}-o{% else %}{% endif %}" aria-hidden ="true"></li>
+                            <li class=" fa fa-star{% if product.averageReview >= 2.5 and product.averageReview < 3 %}-half-o{% elif product.averageReview < 2.5 %}-o{% else %}{% endif %}" aria-hidden ="true"></li>
+                            <li class=" fa fa-star{% if product.averageReview >= 3.5 and product.averageReview < 4 %}-half-o{% elif product.averageReview < 3.5 %}-o{% else %}{% endif %}" aria-hidden ="true"></li>
+                            <li class=" fa fa-star{% if product.averageReview >= 4.5 and product.averageReview < 5 %}-half-o{% elif product.averageReview < 4.5 %}-o{% else %}{% endif %}" aria-hidden ="true"></li>
+							{% else %}
+							<li class=" fa fa-star-o" aria-hidden ="true"></li>
+							<li class=" fa fa-star-o" aria-hidden ="true"></li>
+							<li class=" fa fa-star-o" aria-hidden ="true"></li>
+							<li class=" fa fa-star-o" aria-hidden ="true"></li>
+							<li class=" fa fa-star-o" aria-hidden ="true"></li>
+							{% endif %}
+						</span>
+                    </span>
+                </div>
+
 			</figcaption>
 		</div>
 	</div> <!-- col.// -->

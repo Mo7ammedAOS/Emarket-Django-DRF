@@ -40,4 +40,25 @@ label:hover ~ input:checked ~ label{
 }
 
 
+.thumb{
+    margin: 0 auto;
+    padding: 0;
+    float: left;
+    list-style: none;
+    display: inline;
+    
+}
 
+.thumb li a{
+    list-style: none;
+    display: inline;
+    margin: 10px;
+    height: 80px;
+    width: 80px;
+}
+
+.thumb li a img{
+    width:80px;
+    height: 80px;
+    border: 1px soild gray;
+}

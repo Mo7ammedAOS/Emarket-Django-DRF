@@ -3,8 +3,9 @@ from sre_parse import CATEGORIES
 from unicodedata import category
 from django.http import HttpResponse
 from django.shortcuts import  redirect, render, get_object_or_404
+from accounts.models import UserProfile
 from category.models import Category
-from store.models import Product
+from store.models import Product, Product_Gallery
 from cart_e.models import CartItem,Cart
 from cart_e.views import _cart_id
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -13,6 +14,7 @@ from store.models import ReviewRate
 from store.form import ReviewForm
 from order.models import Product_order
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -23,13 +25,13 @@ def store(request, catg_slug = None):
 
     if catg_slug != None:
         categories = get_object_or_404(Category,slug = catg_slug)
-        products   = Product.objects.filter(category = categories, is_available = True)
+        products   = Product.objects.all().filter(category = categories, is_available = True).order_by('-created')
         paginator = Paginator(products, 3)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         product_count = products.count()
     else:
-        products    = Product.objects.all().filter(is_available = True).order_by('id')
+        products    = Product.objects.all().filter(is_available = True).order_by('-created')
         paginator = Paginator(products, 3)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
@@ -40,7 +42,6 @@ def store(request, catg_slug = None):
         'product_count':product_count
     }
     return render(request,'store/store.html', context)
-
 
 def product_detail(request, catg_slug, product_slug):
     
@@ -60,12 +61,14 @@ def product_detail(request, catg_slug, product_slug):
     
     
     reviews = ReviewRate.objects.filter(product_id = product_information.id , status = True)
-    
+   
+    product_gallery = Product_Gallery.objects.filter(product_id = product_information.id)
     context = {
         'product_information':product_information,
         'is_it_Incart':is_it_Incart,
         'any_orders_there':any_order_there,
-        'reviews':reviews
+        'reviews':reviews,
+        'product_gallery':product_gallery,
         }
     return render(request,'store/product_detail.html',context)
 

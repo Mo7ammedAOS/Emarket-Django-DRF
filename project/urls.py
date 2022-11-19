@@ -18,8 +18,9 @@ from django.urls import path ,include
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('securedadmin/', admin.site.urls),
     path('',include('online_market.urls',namespace='home')),
     path('store/',include('store.urls',namespace='store')),
     path('cart/',include('cart_e.urls',namespace='cart')),

@@ -61,7 +61,7 @@ MIDDLEWARE = [
 ]
 
 
-SESSION_EXPIRE_SECONDS = 300
+SESSION_EXPIRE_SECONDS = 5000
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 SESSION_TIMEOUT_REDIRECT = 'accounts/login/'
 
@@ -181,12 +181,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email configurations:
 
-EMAIL_BACKEND = config('EMAIL_BACKEND')
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS' ,cast = bool)
-EMAIL_PORT = config('EMAIL_PORT', cast = int)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'mohammed1struc@gmail.com'
+EMAIL_HOST_PASSWORD = 'nptrrygkqdioxacb'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
 
 
 
